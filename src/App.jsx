@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import GlobalStyles from './styles/GlobalStyles';
 
 import Dashboard from './pages/Dashboard';
@@ -6,9 +6,9 @@ import Account from './pages/Account';
 import Bookings from './pages/Bookings';
 import Cabins from './pages/Cabins';
 import Login from './pages/Login';
-import Settings from './pages/Dashboard';
-import Users from './pages/Dashboard';
-import PageNotFound from './pages/Dashboard';
+import Settings from './pages/Settings';
+import Users from './pages/Users';
+import PageNotFound from './pages/PageNotFound';
 
 export default function App() {
   return (
@@ -16,6 +16,7 @@ export default function App() {
       <GlobalStyles />
       <BrowserRouter>
         <Routes>
+          <Route index element={<Navigate to='/dashboard' />} />
           <Route path='dashboard' element={<Dashboard />} />
           <Route path='account' element={<Account />} />
           <Route path='bookings' element={<Bookings />} />
