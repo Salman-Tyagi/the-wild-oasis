@@ -3,10 +3,11 @@ import GlobalStyles from './styles/GlobalStyles';
 import Heading from './ui/Heading';
 import Button from './ui/Button';
 import Input from './ui/Input';
+import Row from './ui/Row';
 
 const StyledApp = styled.div`
   padding: 2rem;
-  background-color: orange;
+  /* background-color: orange; */
 `;
 
 export default function App() {
@@ -14,14 +15,36 @@ export default function App() {
     <>
       <GlobalStyles />
       <StyledApp>
-        <Heading as='h1'>The Wild Oasis</Heading>
-        <Button onClick={() => alert('Check in')}>Check in</Button>
-        <Button onClick={() => alert('Check out')}>Check out</Button>
-        <Heading as='h2'>The heading style</Heading>
+        <Row type='vertical'>
+          <Row type='horizontal'>
+            <Heading as='h1'>The Wild Oasis</Heading>
+            <div>
+              <Heading as='h2'>The heading style</Heading>
+              <Button
+                size='large'
+                variation='primary'
+                onClick={() => alert('Check in')}
+              >
+                Check in
+              </Button>
+              <Button
+                size='small'
+                variation='danger'
+                onClick={() => alert('Check out')}
+              >
+                Check out
+              </Button>
+            </div>
+          </Row>
 
-        <Input type='number' placeholder='Number of guests' />
-        <Input type='number' placeholder='Number of guests' />
-        <Heading as='h3'>Form</Heading>
+          <Row type='vertical'>
+            <Heading as='h3'>Form</Heading>
+            <div>
+              <Input type='number' placeholder='Number of guests' />
+              <Input type='number' placeholder='Number of guests' />
+            </div>
+          </Row>
+        </Row>
       </StyledApp>
     </>
   );
