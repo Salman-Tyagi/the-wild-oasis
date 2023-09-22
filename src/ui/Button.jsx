@@ -51,7 +51,6 @@ const variations = {
 const Button = styled.button`
   border: none;
   border-radius: var(--border-radius-sm);
-  cursor: pointer;
 
   ${props => sizes[props.size]}
   ${props => variations[props.variation]}
