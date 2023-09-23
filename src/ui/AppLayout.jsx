@@ -9,12 +9,17 @@ const StyledAppLayout = styled.div`
   grid-template-rows: auto 1fr;
 `;
 
+const Main = styled.main`
+  background-color: var(--color-grey-50);
+  height: 100vh;
+`;
+
 function AppLayout() {
   return (
     <StyledAppLayout>
       <Header />
       <Sidebar />
-      {<Outlet />}
+      <Main>{<Outlet />}</Main>
     </StyledAppLayout>
   );
 }
