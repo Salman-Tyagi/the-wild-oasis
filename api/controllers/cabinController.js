@@ -18,9 +18,7 @@ export const createCabin = async (req, res) => {
 
 export const getCabins = async (req, res) => {
   try {
-    console.log('getCabins ----------->');
     const cabins = await Cabin.find();
-
     res.status(200).json({
       status: 'success',
       data: {

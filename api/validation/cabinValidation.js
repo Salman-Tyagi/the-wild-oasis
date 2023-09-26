@@ -7,7 +7,7 @@ const cabinValidation = celebrate({
     maxCapacity: Joi.number().integer().required(),
     discount: Joi.number().integer().required(),
     description: Joi.string().required(),
-    image: Joi.string().required(),
+    image: Joi.string(),
     createdAt: Joi.date().default(Date.now()).forbidden(),
   }),
 });

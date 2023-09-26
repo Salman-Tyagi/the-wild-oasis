@@ -1,21 +1,11 @@
-// import supabase from './supabase';
-
 export async function getCabins() {
-  // const { data, error } = await supabase.from("cabins").select("*");
   try {
     const res = await fetch('http://127.0.0.1:9000/api/v1/cabins');
     const data = await res.json();
     return data;
-  } catch (err) {
-    console.log(err.message);
+  } catch {
+    throw new Error('Error in getting cabins...');
   }
-
-  // if (error) {
-  //   console.error(error);
-  //   throw new Error('Cabins could not be loaded');
-  // }
-
-  // return data;
 }
 
 export async function deleteCabin(_id) {
@@ -26,6 +16,20 @@ export async function deleteCabin(_id) {
       body: null,
     });
   } catch {
-    throw new Error(`Error in deleting cabin`);
+    throw new Error(`Error in deleting cabin...`);
+  }
+}
+
+export async function createCabin(newCabin) {
+  try {
+    await fetch(`http://127.0.0.1:9000/api/v1/cabins`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(newCabin),
+    });
+  } catch {
+    throw new Error('Error in creating cabin...');
   }
 }
