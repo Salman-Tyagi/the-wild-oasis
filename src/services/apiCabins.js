@@ -17,3 +17,15 @@ export async function getCabins() {
 
   // return data;
 }
+
+export async function deleteCabin(_id) {
+  try {
+    await fetch(`http://127.0.0.1:9000/api/v1/cabins/${_id}`, {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: null,
+    });
+  } catch {
+    throw new Error(`Cabin can't be deleted`);
+  }
+}

@@ -34,3 +34,17 @@ export const getCabins = async (req, res) => {
     });
   }
 };
+
+export const deleteCabin = async (req, res) => {
+  try {
+    await Cabin.findByIdAndDelete(req.params.id);
+    res.status(204).json({
+      data: null,
+    });
+  } catch (err) {
+    res.status(404).json({
+      status: 'fail',
+      message: err.message,
+    });
+  }
+};
