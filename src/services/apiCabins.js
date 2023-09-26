@@ -26,6 +26,6 @@ export async function deleteCabin(_id) {
       body: null,
     });
   } catch {
-    throw new Error(`Cabin can't be deleted`);
+    throw new Error(`Error in deleting cabin`);
   }
 }
