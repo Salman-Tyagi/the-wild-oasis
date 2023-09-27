@@ -67,7 +67,7 @@ function CabinRow({ cabin }) {
 
   return (
     <TableRow role='row'>
-      <Img src='/cabin-001.jpg' alt={`Cabin ${name}`} />
+      <Img src={image ? image : '/image.jpg'} alt={`Cabin ${name}`} />
 
       <Cabin>{name}</Cabin>
 

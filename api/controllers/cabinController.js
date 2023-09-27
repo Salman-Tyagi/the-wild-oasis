@@ -1,8 +1,34 @@
 import Cabin from '../models/cabinModel.js';
+import multer from 'multer';
+
+const multerStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'public/');
+  },
+  filename: (req, file, cb) => {
+    cb(null, file.originalname);
+  },
+});
+
+const multerFilter = (req, file, cb) => {
+  if (file.mimetype.startsWith('image')) {
+    cb(null, true);
+  } else {
+    cb(new Error('Not an image. Supported images jpeg and png'), false);
+  }
+};
+
+export const upload = multer({
+  storage: multerStorage,
+  fileFilter: multerFilter,
+});
 
 export const createCabin = async (req, res) => {
   try {
-    const cabin = await Cabin.create(req.body);
+    const filteredObject = req.body;
+    if (req.file) filteredObject.image = req.file.filename;
+
+    const cabin = await Cabin.create(filteredObject);
 
     res.status(201).json({
       status: 'success',

@@ -6,7 +6,12 @@ const router = express.Router();
 
 router.get('/', cabinController.getCabins);
 
-router.post('/', cabinValidation, cabinController.createCabin);
+router.post(
+  '/',
+  cabinController.upload.single('image'),
+  cabinValidation,
+  cabinController.createCabin
+);
 
 router.delete('/:id', cabinController.deleteCabin);
 

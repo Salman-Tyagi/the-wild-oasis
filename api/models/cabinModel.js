@@ -23,7 +23,7 @@ const cabinSchema = new mongoose.Schema({
   },
   image: {
     type: String,
-    // required: true,
+    default: 'defaultCabin.jpg',
   },
   createdAt: {
     type: Date,
