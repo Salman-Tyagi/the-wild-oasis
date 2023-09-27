@@ -1,10 +1,12 @@
 import styled from 'styled-components';
-
-import { formatCurrency } from '../../utils/helpers';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { deleteCabin } from '../../services/apiCabins';
+import { useState } from 'react';
 import toast from 'react-hot-toast';
+
+import CreateCabinForm from './CreateCabinForm';
 import Button from '../../ui/Button';
+import { formatCurrency } from '../../utils/helpers';
+import { deleteCabin } from '../../services/apiCabins';
 
 const TableRow = styled.div`
   display: grid;
@@ -47,12 +49,13 @@ const Discount = styled.div`
 `;
 
 function CabinRow({ cabin }) {
+  const [showForm, setShowForm] = useState(false);
   const { _id, name, maxCapacity, regularPrice, discount, image } = cabin;
 
   const queryClient = useQueryClient();
 
   const { isLoading: isDeleting, mutate } = useMutation({
-    mutationFn: _id => deleteCabin(_id),
+    mutationFn: () => deleteCabin(_id),
 
     onSuccess: () => {
       toast.success('Cabin deleted successfully');
@@ -66,29 +69,41 @@ function CabinRow({ cabin }) {
   });
 
   return (
-    <TableRow role='row'>
-      <Img src={image ? image : '/image.jpg'} alt={`Cabin ${name}`} />
+    <>
+      <TableRow role='row'>
+        <Img src={image} alt={`Cabin ${name}`} />
 
-      <Cabin>{name}</Cabin>
+        <Cabin>{name}</Cabin>
 
-      <div>Fits up to {maxCapacity} guests</div>
+        <div>Fits up to {maxCapacity} guests</div>
 
-      <Price>{formatCurrency(regularPrice)}</Price>
+        <Price>{formatCurrency(regularPrice)}</Price>
 
-      {discount ? (
-        <Discount>{formatCurrency(discount)}</Discount>
-      ) : (
-        <span>&mdash;</span>
-      )}
-      <Button
-        size='small'
-        variation='danger'
-        onClick={() => mutate(_id)}
-        disabled={isDeleting}
-      >
-        Delete
-      </Button>
-    </TableRow>
+        {discount ? (
+          <Discount>{formatCurrency(discount)}</Discount>
+        ) : (
+          <span>&mdash;</span>
+        )}
+        <div style={{ display: 'flex', gap: '8px' }}>
+          <Button
+            size='small'
+            variatin='secondary'
+            onClick={() => setShowForm(show => !show)}
+          >
+            {showForm ? 'Close' : 'Edit'}
+          </Button>
+          <Button
+            size='small'
+            variation='danger'
+            onClick={() => mutate(_id)}
+            disabled={isDeleting}
+          >
+            Delete
+          </Button>
+        </div>
+      </TableRow>
+      {showForm && <CreateCabinForm EditCabin={cabin} />}
+    </>
   );
 }
 

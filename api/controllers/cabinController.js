@@ -59,6 +59,29 @@ export const getCabins = async (req, res) => {
   }
 };
 
+export const updateCabin = async (req, res) => {
+  try {
+    const updatedCabin = await Cabin.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      {
+        runValidators: true,
+        new: true,
+      }
+    );
+
+    res.status(201).json({
+      status: 'success',
+      updatedCabin,
+    });
+  } catch (err) {
+    res.status(404).json({
+      status: 'fail',
+      message: err.message,
+    });
+  }
+};
+
 export const deleteCabin = async (req, res) => {
   try {
     await Cabin.findByIdAndDelete(req.params.id);
