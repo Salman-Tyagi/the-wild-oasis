@@ -10,26 +10,39 @@ export async function getCabins() {
 
 export async function deleteCabin(_id) {
   try {
-    await fetch(`http://127.0.0.1:9000/api/v1/cabins/${_id}`, {
+    const res = await fetch(`http://127.0.0.1:9000/api/v1/cabins/${_id}`, {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
       body: null,
     });
-  } catch {
-    throw new Error(`Error in deleting cabin...`);
+
+    if (!res.ok) throw new Error('Error in deleting cabin...');
+  } catch (err) {
+    throw new Error(err.message);
   }
 }
 
 export async function createCabin(newCabin) {
   try {
-    await fetch(`http://127.0.0.1:9000/api/v1/cabins`, {
+    const form = new FormData();
+
+    for (let key in newCabin) {
+      if (key === 'image') {
+        form.append(key, Array.from(newCabin[key])[0]);
+      } else {
+        form.append(key, newCabin[key]);
+      }
+    }
+
+    const res = await fetch(`http://127.0.0.1:9000/api/v1/cabins`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
+        Accept: 'application/json',
       },
-      body: JSON.stringify(newCabin),
+      body: form,
     });
-  } catch {
-    throw new Error('Error in creating cabin...');
+    if (!res.ok) throw new Error('Error in creating cabin...');
+  } catch (err) {
+    throw new Error(err.message);
   }
 }

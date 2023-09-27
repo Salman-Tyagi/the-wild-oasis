@@ -10,11 +10,6 @@ import { createCabin } from '../../services/apiCabins';
 import toast from 'react-hot-toast';
 import styled from 'styled-components';
 
-const Error = styled.span`
-  font-size: 1.2rem;
-  color: var(--color-red-700);
-`;
-
 function CreateCabinForm() {
   const { register, handleSubmit, reset, getValues, formState } = useForm();
   const { errors } = formState;
@@ -47,6 +42,7 @@ function CreateCabinForm() {
         <Input
           type='text'
           id='name'
+          disabled={isCreating}
           {...register('name', {
             required: 'This field is required',
           })}
@@ -57,6 +53,7 @@ function CreateCabinForm() {
         <Input
           type='number'
           id='maxCapacity'
+          disabled={isCreating}
           {...register('maxCapacity', {
             required: 'This field is required',
             min: {
@@ -71,6 +68,7 @@ function CreateCabinForm() {
         <Input
           type='number'
           id='regularPrice'
+          disabled={isCreating}
           {...register('regularPrice', { required: 'This field is required' })}
         />
       </FormRow>
@@ -79,12 +77,16 @@ function CreateCabinForm() {
         <Input
           type='number'
           id='discount'
+          disabled={isCreating}
           defaultValue={0}
           {...register('discount', {
             required: 'This field is required',
-            validate: value =>
-              getValues().regularPrice >= value ||
-              'Discount should be less than regular price',
+            validate: value => {
+              return (
+                +getValues().regularPrice >= +value ||
+                'Discount should be less than regular price'
+              );
+            },
           })}
         />
       </FormRow>
@@ -96,13 +98,20 @@ function CreateCabinForm() {
         <Textarea
           type='number'
           id='description'
+          disabled={isCreating}
           defaultValue=''
           {...register('description', { required: 'This field is required' })}
         />
       </FormRow>
 
       <FormRow label='Cabin photo'>
-        <FileInput id='image' accept='image/*' />
+        <FileInput
+          id='image'
+          disabled={isCreating}
+          accept='image/*'
+          type='file'
+          {...register('image')}
+        />
       </FormRow>
 
       <FormRow>
