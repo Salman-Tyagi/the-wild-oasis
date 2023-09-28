@@ -1,7 +1,4 @@
 import { useForm } from 'react-hook-form';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { createCabin, updateCabin } from '../../services/apiCabins';
-import toast from 'react-hot-toast';
 
 import FormRow from '../../ui/FormRow';
 import Input from '../../ui/Input';
@@ -9,39 +6,40 @@ import Form from '../../ui/Form';
 import Button from '../../ui/Button';
 import FileInput from '../../ui/FileInput';
 import { Textarea } from '../../ui/Textarea';
+import { useCreateUpdateCabin } from './useCreateUpdateCabin';
 
 function CreateCabinForm({ EditCabin = {} }) {
   const { _id, ...editValues } = EditCabin;
   const isEditSession = _id ? true : false;
 
-  const { register, handleSubmit, reset, getValues, formState, dasb } = useForm(
-    {
-      defaultValues: isEditSession ? editValues : {},
-    }
-  );
+  const { register, handleSubmit, reset, getValues, formState } = useForm({
+    defaultValues: isEditSession ? editValues : {},
+  });
   const { errors } = formState;
 
-  const clientQuery = useQueryClient();
+  const { isCreating, mutate } = useCreateUpdateCabin(_id, reset);
 
-  const { isLoading: isCreating, mutate } = useMutation({
-    mutationFn: isEditSession
-      ? newCabin => updateCabin(newCabin, _id)
-      : newCabin => createCabin(newCabin),
+  // const clientQuery = useQueryClient();
 
-    onSuccess: () => {
-      toast.success(
-        isEditSession
-          ? 'Cabin updated successfully'
-          : 'New cabin created successfully'
-      );
-      clientQuery.invalidateQueries({
-        queryKey: ['cabins'],
-      });
-      reset();
-    },
+  // const { isLoading: isCreating, mutate } = useMutation({
+  //   mutationFn: isEditSession
+  //     ? newCabin => updateCabin(newCabin, _id)
+  //     : newCabin => createCabin(newCabin),
 
-    onError: err => toast.error(err.message),
-  });
+  //   onSuccess: () => {
+  //     toast.success(
+  //       isEditSession
+  //         ? 'Cabin updated successfully'
+  //         : 'New cabin created successfully'
+  //     );
+  //     clientQuery.invalidateQueries({
+  //       queryKey: ['cabins'],
+  //     });
+  //     reset();
+  //   },
+
+  //   onError: err => toast.error(err.message),
+  // });
 
   function onSubmit(data) {
     mutate(data);

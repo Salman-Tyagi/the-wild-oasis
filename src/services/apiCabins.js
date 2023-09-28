@@ -1,6 +1,8 @@
 export async function getCabins() {
   try {
     const res = await fetch('http://127.0.0.1:9000/api/v1/cabins');
+    if (!res.ok) throw new Error('Error in fetching cabin...');
+
     const data = await res.json();
     return data;
   } catch {
