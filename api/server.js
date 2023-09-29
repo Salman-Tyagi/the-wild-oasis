@@ -1,17 +1,5 @@
 import mongoose from 'mongoose';
-import dotenv from 'dotenv';
-import morgan from 'morgan';
-import path from 'path';
 import app from './app.js';
-
-const __dirname = path.resolve();
-dotenv.config({
-  path: path.resolve(__dirname, './api/.env'),
-});
-
-if (process.env.NODE_ENV === 'development') {
-  app.use(morgan('dev'));
-}
 
 (async () => {
   try {
