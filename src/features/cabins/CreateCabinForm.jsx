@@ -120,7 +120,7 @@ function CreateCabinForm({ setShowForm, EditCabin = {} }) {
       <FormRow>
         {/* type is an HTML attribute! */}
         <Button
-          onClick={() => setShowForm(false)}
+          // onClick={() => setShowForm(false)}
           variation='secondary'
           type='reset'
         >

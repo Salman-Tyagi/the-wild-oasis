@@ -7,10 +7,7 @@ export function useCabins() {
     queryFn: getCabins,
   });
 
-  let cabins;
-  if (data) {
-    cabins = data.data;
-  }
+  const cabins = data?.data;
 
   return { isLoading, cabins };
 }

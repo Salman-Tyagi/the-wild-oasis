@@ -40,3 +40,18 @@ export async function getSettings() {
     throw new Error(err.message);
   }
 }
+
+export async function updateSettings(newSettings, id) {
+  try {
+    const data = await fetch(`http://127.0.0.1:9000/api/v1/settings/${id}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(newSettings),
+    });
+    if (!data.ok) throw new Error('Error in updating settings...');
+  } catch (err) {
+    throw new Error(err.message);
+  }
+}

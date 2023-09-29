@@ -29,3 +29,26 @@ export const getSettings = async (req, res) => {
     });
   }
 };
+
+export const updateSettings = async (req, res) => {
+  try {
+    const newSettings = await Settings.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      {
+        runValidators: true,
+        new: true,
+      }
+    );
+
+    res.status(201).json({
+      status: 'success',
+      newSettings,
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: 'fail',
+      message: err.message,
+    });
+  }
+};
