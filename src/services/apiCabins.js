@@ -25,13 +25,16 @@ export async function deleteCabin(id) {
 }
 
 export async function createCabin(newCabin) {
-  console.log(newCabin);
   try {
     const form = new FormData();
 
     for (let key in newCabin) {
       if (key === 'image') {
-        form.append(key, Array.from(newCabin[key][0]));
+        if (typeof newCabin[key] === 'string') {
+          form.append(key, newCabin[key]);
+        } else {
+          form.append(key, Array.from(newCabin[key][0]));
+        }
       } else {
         form.append(key, newCabin[key]);
       }
