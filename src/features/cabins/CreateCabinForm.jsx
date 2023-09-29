@@ -1,4 +1,5 @@
 import { useForm } from 'react-hook-form';
+import { useCreateUpdateCabin } from './useCreateUpdateCabin';
 
 import FormRow from '../../ui/FormRow';
 import Input from '../../ui/Input';
@@ -6,9 +7,8 @@ import Form from '../../ui/Form';
 import Button from '../../ui/Button';
 import FileInput from '../../ui/FileInput';
 import { Textarea } from '../../ui/Textarea';
-import { useCreateUpdateCabin } from './useCreateUpdateCabin';
 
-function CreateCabinForm({ EditCabin = {} }) {
+function CreateCabinForm({ setShowForm, EditCabin = {} }) {
   const { _id, ...editValues } = EditCabin;
   const isEditSession = _id ? true : false;
 
@@ -17,32 +17,14 @@ function CreateCabinForm({ EditCabin = {} }) {
   });
   const { errors } = formState;
 
-  const { isCreating, mutate } = useCreateUpdateCabin(_id, reset);
-
-  // const clientQuery = useQueryClient();
-
-  // const { isLoading: isCreating, mutate } = useMutation({
-  //   mutationFn: isEditSession
-  //     ? newCabin => updateCabin(newCabin, _id)
-  //     : newCabin => createCabin(newCabin),
-
-  //   onSuccess: () => {
-  //     toast.success(
-  //       isEditSession
-  //         ? 'Cabin updated successfully'
-  //         : 'New cabin created successfully'
-  //     );
-  //     clientQuery.invalidateQueries({
-  //       queryKey: ['cabins'],
-  //     });
-  //     reset();
-  //   },
-
-  //   onError: err => toast.error(err.message),
-  // });
+  const { isCreatingUpdating, mutate } = useCreateUpdateCabin(_id);
 
   function onSubmit(data) {
-    mutate(data);
+    mutate(data, {
+      onSuccess: () => {
+        reset();
+      },
+    });
   }
 
   function onError(errors) {
@@ -55,7 +37,7 @@ function CreateCabinForm({ EditCabin = {} }) {
         <Input
           type='text'
           id='name'
-          disabled={isCreating}
+          disabled={isCreatingUpdating}
           {...register('name', {
             required: 'This field is required',
           })}
@@ -66,7 +48,7 @@ function CreateCabinForm({ EditCabin = {} }) {
         <Input
           type='number'
           id='maxCapacity'
-          disabled={isCreating}
+          disabled={isCreatingUpdating}
           {...register('maxCapacity', {
             required: 'This field is required',
             min: {
@@ -81,7 +63,7 @@ function CreateCabinForm({ EditCabin = {} }) {
         <Input
           type='number'
           id='regularPrice'
-          disabled={isCreating}
+          disabled={isCreatingUpdating}
           {...register('regularPrice', { required: 'This field is required' })}
         />
       </FormRow>
@@ -90,7 +72,7 @@ function CreateCabinForm({ EditCabin = {} }) {
         <Input
           type='number'
           id='discount'
-          disabled={isCreating}
+          disabled={isCreatingUpdating}
           defaultValue={0}
           {...register('discount', {
             required: 'This field is required',
@@ -111,7 +93,7 @@ function CreateCabinForm({ EditCabin = {} }) {
         <Textarea
           type='number'
           id='description'
-          disabled={isCreating}
+          disabled={isCreatingUpdating}
           defaultValue=''
           {...register('description', { required: 'This field is required' })}
         />
@@ -120,7 +102,7 @@ function CreateCabinForm({ EditCabin = {} }) {
       <FormRow label='Cabin photo' error={errors?.image?.message}>
         <FileInput
           id='image'
-          disabled={isCreating}
+          disabled={isCreatingUpdating}
           accept='image/*'
           type='file'
           {...register('image', {
@@ -131,10 +113,14 @@ function CreateCabinForm({ EditCabin = {} }) {
 
       <FormRow>
         {/* type is an HTML attribute! */}
-        <Button variation='secondary' type='reset'>
+        <Button
+          onClick={() => setShowForm(false)}
+          variation='secondary'
+          type='reset'
+        >
           Cancel
         </Button>
-        <Button disabled={isCreating}>
+        <Button disabled={isCreatingUpdating}>
           {isEditSession ? 'Save cabin' : 'Add Cabin'}
         </Button>
       </FormRow>

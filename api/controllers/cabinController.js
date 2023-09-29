@@ -47,9 +47,7 @@ export const getCabins = async (req, res) => {
     const cabins = await Cabin.find();
     res.status(200).json({
       status: 'success',
-      data: {
-        cabins,
-      },
+      data: cabins,
     });
   } catch {
     res.status(404).json({
@@ -61,9 +59,12 @@ export const getCabins = async (req, res) => {
 
 export const updateCabin = async (req, res) => {
   try {
+    const filteredObject = req.body;
+    if (req.file) filteredObject.image = req.file.filename;
+
     const updatedCabin = await Cabin.findByIdAndUpdate(
       req.params.id,
-      req.body,
+      filteredObject,
       {
         runValidators: true,
         new: true,

@@ -51,13 +51,26 @@ export async function createCabin(newCabin) {
 
 export async function updateCabin(newCabin, id) {
   try {
+    const form = new FormData();
+
+    for (let key in newCabin) {
+      if (key === 'image' && Array.from(newCabin[key])[0]) {
+        if (typeof newCabin[key] !== 'string') {
+          form.append(key, Array.from(newCabin[key])[0]);
+        } else {
+          delete newCabin[key];
+        }
+      } else {
+        form.append(key, newCabin[key]);
+      }
+    }
+
     const data = await fetch(`http://127.0.0.1:9000/api/v1/cabins/${id}`, {
       method: 'PATCH',
       headers: {
         Accept: 'application/json',
-        'Content-Type': 'application/json',
       },
-      body: JSON.stringify(newCabin),
+      body: form,
     });
     if (!data.ok) throw new Error('Error in updating cabin...');
   } catch (err) {

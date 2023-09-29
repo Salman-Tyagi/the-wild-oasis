@@ -11,7 +11,12 @@ router.post(
   cabinValidation,
   cabinController.createCabin
 );
-router.patch('/:id', cabinController.updateCabin);
+router.patch(
+  '/:id',
+  cabinController.upload.single('image'),
+  // cabinValidation,
+  cabinController.updateCabin
+);
 router.delete('/:id', cabinController.deleteCabin);
 
 export default router;
