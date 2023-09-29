@@ -1,9 +1,15 @@
 import styled from 'styled-components';
 import { useState } from 'react';
+import {
+  HiOutlinePencil,
+  HiOutlineSquare2Stack,
+  HiOutlineTrash,
+} from 'react-icons/hi2';
+
 import { useDeleteCabin } from './useDeleteCabin';
+import { useCreateCabin } from './useCreateCabin';
 
 import CreateCabinForm from './CreateCabinForm';
-import Button from '../../ui/Button';
 import { formatCurrency } from '../../utils/helpers';
 
 const TableRow = styled.div`
@@ -48,8 +54,21 @@ const Discount = styled.div`
 
 function CabinRow({ cabin }) {
   const [showForm, setShowForm] = useState(false);
-  const { _id, name, maxCapacity, regularPrice, discount, image } = cabin;
+  const { _id, name, maxCapacity, regularPrice, discount, description, image } =
+    cabin;
   const { isDeleting, mutate } = useDeleteCabin();
+  const { isCreating, createCabinApi } = useCreateCabin();
+
+  function handleDuplicate() {
+    createCabinApi({
+      name: `Copy of ${name}`,
+      maxCapacity,
+      regularPrice,
+      discount,
+      description,
+      image,
+    });
+  }
 
   return (
     <>
@@ -67,22 +86,22 @@ function CabinRow({ cabin }) {
         ) : (
           <span>&mdash;</span>
         )}
-        <div style={{ display: 'flex', gap: '8px' }}>
-          <Button
-            size='small'
-            variatin='secondary'
+        <div>
+          <button onClick={handleDuplicate} disabled={isCreating || isDeleting}>
+            <HiOutlineSquare2Stack />
+          </button>
+          <button
             onClick={() => setShowForm(show => !show)}
+            disabled={isCreating || isDeleting}
           >
-            {showForm ? 'Close' : 'Edit'}
-          </Button>
-          <Button
-            size='small'
-            variation='danger'
+            <HiOutlinePencil />
+          </button>
+          <button
             onClick={() => mutate(_id)}
-            disabled={isDeleting}
+            disabled={isDeleting || isCreating}
           >
-            Delete
-          </Button>
+            <HiOutlineTrash />
+          </button>
         </div>
       </TableRow>
       {showForm && <CreateCabinForm EditCabin={cabin} />}

@@ -1,5 +1,6 @@
 import { useForm } from 'react-hook-form';
-import { useCreateUpdateCabin } from './useCreateUpdateCabin';
+import { useCreateCabin } from './useCreateCabin';
+import { useUpdateCabin } from './useUpdateCabin';
 
 import FormRow from '../../ui/FormRow';
 import Input from '../../ui/Input';
@@ -17,14 +18,19 @@ function CreateCabinForm({ setShowForm, EditCabin = {} }) {
   });
   const { errors } = formState;
 
-  const { isCreatingUpdating, mutate } = useCreateUpdateCabin(_id);
+  const { isCreating, createCabinApi } = useCreateCabin();
+  const { isUpdating, updateCabinApi } = useUpdateCabin(_id);
 
   function onSubmit(data) {
-    mutate(data, {
-      onSuccess: () => {
-        reset();
-      },
-    });
+    if (isEditSession) {
+      updateCabinApi(data);
+    } else {
+      createCabinApi(data, {
+        onSuccess: () => {
+          reset();
+        },
+      });
+    }
   }
 
   function onError(errors) {
@@ -37,7 +43,7 @@ function CreateCabinForm({ setShowForm, EditCabin = {} }) {
         <Input
           type='text'
           id='name'
-          disabled={isCreatingUpdating}
+          disabled={isCreating || isUpdating}
           {...register('name', {
             required: 'This field is required',
           })}
@@ -48,7 +54,7 @@ function CreateCabinForm({ setShowForm, EditCabin = {} }) {
         <Input
           type='number'
           id='maxCapacity'
-          disabled={isCreatingUpdating}
+          disabled={isCreating || isUpdating}
           {...register('maxCapacity', {
             required: 'This field is required',
             min: {
@@ -63,7 +69,7 @@ function CreateCabinForm({ setShowForm, EditCabin = {} }) {
         <Input
           type='number'
           id='regularPrice'
-          disabled={isCreatingUpdating}
+          disabled={isCreating || isUpdating}
           {...register('regularPrice', { required: 'This field is required' })}
         />
       </FormRow>
@@ -72,7 +78,7 @@ function CreateCabinForm({ setShowForm, EditCabin = {} }) {
         <Input
           type='number'
           id='discount'
-          disabled={isCreatingUpdating}
+          disabled={isCreating || isUpdating}
           defaultValue={0}
           {...register('discount', {
             required: 'This field is required',
@@ -93,7 +99,7 @@ function CreateCabinForm({ setShowForm, EditCabin = {} }) {
         <Textarea
           type='number'
           id='description'
-          disabled={isCreatingUpdating}
+          disabled={isCreating || isUpdating}
           defaultValue=''
           {...register('description', { required: 'This field is required' })}
         />
@@ -102,7 +108,7 @@ function CreateCabinForm({ setShowForm, EditCabin = {} }) {
       <FormRow label='Cabin photo' error={errors?.image?.message}>
         <FileInput
           id='image'
-          disabled={isCreatingUpdating}
+          disabled={isCreating || isUpdating}
           accept='image/*'
           type='file'
           {...register('image', {
@@ -120,7 +126,7 @@ function CreateCabinForm({ setShowForm, EditCabin = {} }) {
         >
           Cancel
         </Button>
-        <Button disabled={isCreatingUpdating}>
+        <Button disabled={isCreating || isUpdating}>
           {isEditSession ? 'Save cabin' : 'Add Cabin'}
         </Button>
       </FormRow>

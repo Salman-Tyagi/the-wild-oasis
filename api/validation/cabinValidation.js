@@ -8,7 +8,7 @@ const cabinValidation = celebrate({
     discount: Joi.number().integer().required(),
     description: Joi.string().required(),
     image: Joi.string().default('defaultCabin.jpg'),
-    createdAt: Joi.date().default(Date.now()).forbidden(),
+    createdAt: Joi.date().default(Date.now()),
   }),
 });
 
