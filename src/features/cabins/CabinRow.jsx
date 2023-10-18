@@ -1,16 +1,15 @@
-import styled from 'styled-components';
 import { useState } from 'react';
+import styled from 'styled-components';
 import {
-  HiOutlinePencil,
-  HiOutlineSquare2Stack,
-  HiOutlineTrash,
-} from 'react-icons/hi2';
-
-import { useDeleteCabin } from './useDeleteCabin';
-import { useCreateCabin } from './useCreateCabin';
+  HiOutlineDuplicate,
+  HiOutlinePencilAlt,
+  HiOutlineXCircle,
+} from 'react-icons/hi';
 
 import CreateCabinForm from './CreateCabinForm';
-import { formatCurrency } from '../../utils/helpers';
+
+import useDeleteCabin from './useDeleteCabin';
+import useCreateCabin from './useCreateCabin';
 
 const TableRow = styled.div`
   display: grid;
@@ -30,7 +29,6 @@ const Img = styled.img`
   aspect-ratio: 3 / 2;
   object-fit: cover;
   object-position: center;
-  /* transform: scale(1.66666) translateX(-2px); */
   transform: scale(1.5) translateX(-7px);
 `;
 
@@ -54,14 +52,26 @@ const Discount = styled.div`
 
 function CabinRow({ cabin }) {
   const [showForm, setShowForm] = useState(false);
-  const { _id, name, maxCapacity, regularPrice, discount, description, image } =
-    cabin;
-  const { isDeleting, mutate } = useDeleteCabin();
-  const { isCreating, createCabinApi } = useCreateCabin();
+  const { isDeleting, deletingCabin } = useDeleteCabin();
+  const { isCreating, creatingCabin } = useCreateCabin();
 
-  function handleDuplicate() {
-    createCabinApi({
-      name: `Copy of ${name}`,
+  const {
+    _id: cabinId,
+    image,
+    maxCapacity,
+    regularPrice,
+    discount,
+    name,
+    description,
+  } = cabin;
+
+  function deleteCabinHandle() {
+    deletingCabin(cabinId);
+  }
+
+  function handleDuplicateCabin() {
+    creatingCabin({
+      name: `{copy of} ${name}`,
       maxCapacity,
       regularPrice,
       discount,
@@ -72,39 +82,32 @@ function CabinRow({ cabin }) {
 
   return (
     <>
-      <TableRow role='row'>
-        <Img src={image} alt={`Cabin ${name}`} />
-
+      <TableRow>
+        <Img src={image} alt={`image of cabin ${name}`} />
         <Cabin>{name}</Cabin>
-
-        <div>Fits up to {maxCapacity} guests</div>
-
-        <Price>{formatCurrency(regularPrice)}</Price>
-
-        {discount ? (
-          <Discount>{formatCurrency(discount)}</Discount>
-        ) : (
-          <span>&mdash;</span>
-        )}
-        <div>
-          <button onClick={handleDuplicate} disabled={isCreating || isDeleting}>
-            <HiOutlineSquare2Stack />
-          </button>
-          <button
-            onClick={() => setShowForm(show => !show)}
-            disabled={isCreating || isDeleting}
-          >
-            <HiOutlinePencil />
-          </button>
-          <button
-            onClick={() => mutate(_id)}
-            disabled={isDeleting || isCreating}
-          >
-            <HiOutlineTrash />
-          </button>
+        <div>max capacity of {maxCapacity}</div>
+        <Price>{regularPrice}</Price>
+        <Discount>{discount}</Discount>
+        <div
+          // temporary
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.5rem',
+            cursor: 'pointer',
+            fontSize: '2rem',
+          }}
+        >
+          <HiOutlineDuplicate onClick={handleDuplicateCabin} />
+          <HiOutlinePencilAlt onClick={() => setShowForm(show => !show)}>
+            Edit
+          </HiOutlinePencilAlt>
+          <HiOutlineXCircle disabled={isDeleting} onClick={deleteCabinHandle}>
+            Delete
+          </HiOutlineXCircle>
         </div>
       </TableRow>
-      {showForm && <CreateCabinForm EditCabin={cabin} />}
+      {showForm && <CreateCabinForm cabinToEdit={cabin} />}
     </>
   );
 }

@@ -1,3 +1,27 @@
+import axios from 'axios';
+
+const API_HOST = 'http://127.0.0.1:9000/api/v1/settings';
+
+export const getSettings = async () => {
+  try {
+    const res = await axios(`${API_HOST}`);
+    const data = res?.data.data;
+    return data[0];
+  } catch (err) {
+    console.error(err);
+    throw Error('Error in getting settings data');
+  }
+};
+
+export const updateSettings = async (id, newSettings) => {
+  try {
+    await axios.patch(`${API_HOST}/${id}`, newSettings);
+  } catch (err) {
+    console.error(err);
+    throw Error('Settings could not be updated');
+  }
+};
+
 // import supabase from "./supabase";
 
 // export async function getSettings() {
@@ -25,33 +49,3 @@
 //   }
 //   return data;
 // }
-
-export async function getSettings() {
-  try {
-    const res = await fetch('http://127.0.0.1:9000/api/v1/settings');
-    if (!res.ok) throw new Error('Error in gettings settings...');
-
-    const data = await res.json();
-    if (data.status === 'fail')
-      throw new Error('Error in gettting settings...');
-
-    return data;
-  } catch (err) {
-    throw new Error(err.message);
-  }
-}
-
-export async function updateSettings(newSettings, id) {
-  try {
-    const data = await fetch(`http://127.0.0.1:9000/api/v1/settings/${id}`, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(newSettings),
-    });
-    if (!data.ok) throw new Error('Error in updating settings...');
-  } catch (err) {
-    throw new Error(err.message);
-  }
-}

@@ -14,7 +14,7 @@ const multerFilter = (req, file, cb) => {
   if (file.mimetype.startsWith('image')) {
     cb(null, true);
   } else {
-    cb(new Error('Not an image. Supported images jpeg and png'), false);
+    cb(new Error('Not an image. Supported images: jpeg and png'), false);
   }
 };
 

@@ -5,7 +5,6 @@ import { getAllCabins } from '../../services/apiBookings';
 
 import CabinRow from './CabinRow';
 import Spinner from '../../ui/Spinner';
-import useCabins from './useCabins';
 
 const Table = styled.div`
   border: 1px solid var(--color-grey-200);
@@ -32,7 +31,14 @@ const TableHeader = styled.header`
 `;
 
 function CabinTable() {
-  const { isLoading, cabins } = useCabins();
+  const {
+    data: cabins,
+    error,
+    isLoading,
+  } = useQuery({
+    queryKey: ['cabins'],
+    queryFn: getAllCabins,
+  });
 
   if (isLoading) return <Spinner />;
 

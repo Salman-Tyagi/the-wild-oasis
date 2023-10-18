@@ -11,6 +11,7 @@ router.post(
   cabinValidation,
   cabinController.createCabin
 );
+
 router.patch(
   '/:id',
   cabinController.upload.single('image'),

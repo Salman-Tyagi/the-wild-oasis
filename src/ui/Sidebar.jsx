@@ -1,3 +1,5 @@
+import useCabins from '../features/cabins/useCabins';
+
 import styled from 'styled-components';
 import Logo from './Logo';
 import MainNav from './MainNav';
