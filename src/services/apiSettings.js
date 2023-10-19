@@ -1,6 +1,6 @@
-import axios from 'axios';
+import axios from './axiosIntance';
 
-const API_HOST = 'http://127.0.0.1:9000/api/v1/settings';
+const API_HOST = '/api/v1/settings';
 
 export const getSettings = async () => {
   try {
@@ -8,7 +8,7 @@ export const getSettings = async () => {
     const data = res?.data.data;
     return data[0];
   } catch (err) {
-    console.error(err);
+    console.error(err.response.data);
     throw Error('Error in getting settings data');
   }
 };

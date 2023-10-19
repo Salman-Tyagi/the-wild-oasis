@@ -4,10 +4,12 @@ import morgan from 'morgan';
 import cors from 'cors';
 import helmet from 'helmet';
 import mongoSanitize from 'express-mongo-sanitize';
+import cookieParser from 'cookie-parser';
 import { errors } from 'celebrate';
 
 import cabinRouter from './routes/cabinRoutes.js';
 import settingsRouter from './routes/settingsRoutes.js';
+import authRouter from './routes/authRoutes.js';
 import AppError from './utils/appError.js';
 import globalErrorMiddlewareHandler from './controllers/globalErrorMiddlewareHandler.js';
 
@@ -15,8 +17,6 @@ dotenv.config({ path: '.env' });
 
 const app = express();
 app.use(helmet());
-
-app.use(express.json());
 
 app.use(mongoSanitize());
 
@@ -34,8 +34,18 @@ app.use(cors()); // or
 //   next();
 // });
 
+app.use(express.json());
+app.use(cookieParser());
+
+app.use((req, res, next) => {
+  console.log('REQ.COOKIES ==>', req.cookies.token);
+
+  next();
+});
+
 app.use('/api/v1/cabins', cabinRouter);
 app.use('/api/v1/settings', settingsRouter);
+app.use('/api/v1/users/auth', authRouter);
 
 app.use('*', (req, res, next) => {
   return next(
