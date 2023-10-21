@@ -64,6 +64,10 @@ const globalErrorMiddlewareHandler = (err, req, res, next) => {
   err.message = err.message || 'Something went wrong';
 
   if (process.env.NODE_ENV === 'development') {
+    if (err.code === 11000) err = handleDuplicateDBError(err);
+    if (err.name === 'JsonWebTokenError') err = invalidTokenError();
+    if (err.name === 'TokenExpiredError') err = jwtTokenExpired();
+
     errorDev(err, res);
   }
 

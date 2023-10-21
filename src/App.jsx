@@ -42,16 +42,26 @@ function App() {
             <Route path='dashboard' element={<Dashboard />} />
             <Route path='bookings' element={<Bookings />} />
             <Route path='cabins' element={<Cabins />} />
-            <Route path='users' element={<Users />} />
             <Route path='settings' element={<Settings />} />
             <Route path='account' element={<Account />} />
+            <Route path='users' element={<Users />} />
           </Route>
 
           <Route path='login' element={<Login />} />
           <Route path='*' element={<PageNotFound />} />
         </Routes>
       </BrowserRouter>
-      <Toaster position='top-center' />
+      <Toaster
+        position='top-center'
+        toastOptions={{
+          loading: {
+            duration: 1000,
+            iconTheme: {
+              primary: '#312e81',
+            },
+          },
+        }}
+      />
     </QueryClientProvider>
   );
 }

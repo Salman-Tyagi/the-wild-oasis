@@ -10,6 +10,7 @@ import { errors } from 'celebrate';
 import cabinRouter from './routes/cabinRoutes.js';
 import settingsRouter from './routes/settingsRoutes.js';
 import authRouter from './routes/authRoutes.js';
+import userRouter from './routes/userRoutes.js';
 import AppError from './utils/appError.js';
 import globalErrorMiddlewareHandler from './controllers/globalErrorMiddlewareHandler.js';
 
@@ -46,6 +47,7 @@ app.use((req, res, next) => {
 app.use('/api/v1/cabins', cabinRouter);
 app.use('/api/v1/settings', settingsRouter);
 app.use('/api/v1/users/auth', authRouter);
+app.use('/api/v1/users/', userRouter);
 
 app.use('*', (req, res, next) => {
   return next(

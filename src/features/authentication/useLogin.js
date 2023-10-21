@@ -10,7 +10,7 @@ function useLogin() {
   const { isLoading, mutate: loginUser } = useMutation({
     mutationFn: ({ email, password }) => login({ email, password }),
     onSuccess: () => {
-      toast.success('Login successfull!');
+      toast.loading('Loading...');
       setTimeout(() => navigate('/dashboard'), 1000);
     },
     onError: err => toast.error(err.message),
@@ -21,7 +21,7 @@ function useLogin() {
 
 export default useLogin;
 
-export function currentUser() {
-  const user = localStorage.getItem('token');
-  return user;
+export function isLoggedIn() {
+  const token = localStorage.getItem('token');
+  return token ? true : false;
 }

@@ -1,23 +1,59 @@
 import crypto from 'crypto';
+import jwt from 'jsonwebtoken';
+import multer from 'multer';
+
 import User from '../models/userModel.js';
 import AppError from '../utils/appError.js';
-import jwt from 'jsonwebtoken';
-
 import sendEmail from '../utils/email.js';
+
+const multerStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'public/');
+  },
+  filename: (req, file, cb) => {
+    cb(null, file.originalname);
+  },
+});
+
+const multerFilter = (req, file, cb) => {
+  if (file.mimetype.startsWith('image')) {
+    cb(null, true);
+  } else {
+    cb(new Error('Not an image. Supported images: jpeg and png'), false);
+  }
+};
+
+export const upload = multer({
+  storage: multerStorage,
+  fileFilter: multerFilter,
+});
 
 export const signup = async (req, res, next) => {
   try {
     const newUser = await User.create({
-      name: req.body.name,
+      fullName: req.body.fullName,
       email: req.body.email,
       password: req.body.password,
       passwordConfirm: req.body.passwordConfirm,
     });
 
+    newUser.password = undefined;
+
+    /* COMMENTED, MAILTRAP SHALL NOT FULL */
+    // try {
+    //   await sendEmail({
+    //     email: newUser.email,
+    //     subject: 'Welcome to the Wild Oasis',
+    //     message: 'We are happy to welcome you in our Wild Oasis family.',
+    //   });
+
     res.status(201).json({
       status: 'success',
       data: newUser,
     });
+    // } catch (err) {
+    //   console.log(err);
+    // }
   } catch (err) {
     next(err);
   }
@@ -35,7 +71,7 @@ export const login = async (req, res, next) => {
     const user = await User.findOne({ email, active: true }).select(
       '+password'
     );
-    if (!user) return next(new AppError('Incorrect email or password', 400));
+    if (!user) return next(new AppError('Email does not exist', 400));
 
     // Check email or password is correct
     const correct = await user.comparePassword(user.password, password); // returns boolean
@@ -51,7 +87,6 @@ export const login = async (req, res, next) => {
       expires: new Date(
         Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
       ),
-      secure: false,
       httpOnly: true,
     };
 
@@ -78,6 +113,9 @@ export const protect = async (req, res, next) => {
     } else if (req.cookies.token) {
       token = req.cookies.token;
     }
+
+    if (!token)
+      return next(new AppError('You are not logged in! Please login.', 400));
 
     // Check token is valid
     const decode = jwt.verify(token, process.env.JWT_SECRET_KEY);
@@ -107,6 +145,19 @@ export const protect = async (req, res, next) => {
     req.user = currentUser;
 
     next();
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const getCurrentUser = async (req, res, next) => {
+  try {
+    if (req.headers.authorization || req.cookies.token) {
+      res.status(200).json({
+        status: 'success',
+        data: req.user,
+      });
+    }
   } catch (err) {
     next(err);
   }
@@ -188,6 +239,63 @@ export const resetPassword = async (req, res, next) => {
     await user.save();
 
     res.status(200).json({
+      status: 'success',
+      message: 'Password updated successfully!',
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const logout = async (req, res, next) => {
+  try {
+    const cookieOptions = {
+      httpOnly: true,
+    };
+
+    if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
+    res.cookie('token', '', cookieOptions);
+    // res.clearCookie('token', cookieOptions);
+
+    res.status(200).json({
+      status: 'success',
+      message: 'User logout successfully!',
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const updateUserData = async (req, res, next) => {
+  try {
+    const filteredObject = req.body;
+    if (req.file) filteredObject.avatar = req.file.filename;
+
+    await User.findByIdAndUpdate(req.user._id, filteredObject, {
+      runValidators: true,
+      new: true,
+    });
+
+    res.status(201).json({
+      status: 'success',
+      message: 'Data updated successfully!',
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const updateUserPassword = async (req, res, next) => {
+  try {
+    const user = await User.findOne({ _id: req.user._id });
+    user.password = req.body.password;
+    user.passwordConfirm = req.body.passwordConfirm;
+
+    await user.save();
+    user.password = undefined;
+    console.log(user);
+
+    res.status(201).json({
       status: 'success',
       message: 'Password updated successfully!',
     });

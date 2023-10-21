@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 
 const userSchema = new mongoose.Schema({
-  name: {
+  fullName: {
     type: String,
     required: [true, 'Please provide your name'],
     minLength: [4, 'Name should be 4 characters long'],
@@ -14,6 +14,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Provide your email address'],
     unique: [true, 'Email already exists'],
+  },
+  avatar: {
+    type: String,
+    default: 'default-user.jpg',
   },
   password: {
     type: String,
@@ -38,14 +42,17 @@ const userSchema = new mongoose.Schema({
   active: {
     type: Boolean,
     default: true,
+    select: false,
   },
   verified: {
     type: Boolean,
     default: false,
+    select: false,
   },
   createdAt: {
     type: Date,
     default: Date.now(),
+    select: false,
   },
   passwordChangedAt: {
     type: Date,

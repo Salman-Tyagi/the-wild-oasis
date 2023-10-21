@@ -5,6 +5,9 @@ import app from './app.js';
   try {
     mongoose.connect('mongodb://localhost:27017/wild-oasis');
     console.log('DB connected successfully! ==>');
+    if (process.env.NODE_ENV === 'development') {
+      mongoose.set({ debug: true });
+    }
   } catch (err) {
     console.log(err);
   }

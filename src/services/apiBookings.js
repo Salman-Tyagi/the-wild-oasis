@@ -8,7 +8,7 @@ export const getAllCabins = async () => {
     const data = res?.data?.data;
     return data;
   } catch (err) {
-    console.error(err.response.data);
+    // console.error(err.response.data);
     throw Error('Error in getting cabins');
   }
 };
@@ -17,7 +17,7 @@ export const deleteCabin = async id => {
   try {
     await axios.delete(`${API_HOST}/${id}`);
   } catch (err) {
-    console.error(`Error: ${err.response.data.message}`);
+    // console.error(`Error: ${err.response.data.message}`);
     throw Error('Cabin could be deleted');
   }
 };
@@ -38,7 +38,7 @@ export const createCabin = async newCabin => {
   try {
     await axios.post(`${API_HOST}`, formData);
   } catch (err) {
-    console.error(err);
+    // console.error(err);
     throw Error('Cabin could not be created');
   }
 };
@@ -59,7 +59,7 @@ export const editCabin = async (id, updatedCabin) => {
   try {
     await axios.patch(`${API_HOST}/${id}`, formData);
   } catch (err) {
-    console.error(err);
+    // console.error(err);
     throw Error('Cabin could not be updated');
   }
 };

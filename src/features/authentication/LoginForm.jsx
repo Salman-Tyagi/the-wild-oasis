@@ -14,7 +14,7 @@ const Label = styled.label`
 `;
 
 function LoginForm() {
-  const [email, setEmail] = useState('aamir@gmail.com');
+  const [email, setEmail] = useState('salman@email.com');
   const [password, setPassword] = useState('test1234');
   const { isLoading, loginUser } = useLogin();
 

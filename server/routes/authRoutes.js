@@ -4,7 +4,12 @@ import * as userValidation from '../validation/userValidation.js';
 
 const router = express.Router();
 
-router.post('/signup', userValidation.signupValidation, authController.signup);
+router.post(
+  '/signup',
+  userValidation.signupValidation,
+  authController.upload.single('avatar'),
+  authController.signup
+);
 router.post('/login', userValidation.loginValidtion, authController.login);
 
 router.post(
@@ -18,5 +23,7 @@ router.post(
   // userValidation.resetPasswordValidation,
   authController.resetPassword
 );
+
+router.get('/logout', authController.logout);
 
 export default router;

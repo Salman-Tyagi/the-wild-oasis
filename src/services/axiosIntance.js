@@ -7,13 +7,13 @@ const instance = axios.create({
 });
 
 instance.interceptors.request.use(
-  function (config) {
+  config => {
     // Do something before request is sent
     // console.log(config);
     config.headers.Authorization = `Bearer ${localStorage.getItem('token')}`;
     return config;
   },
-  function (error) {
+  error => {
     // Do something with request error
     return Promise.reject(error);
   }

@@ -1,16 +1,20 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { currentUser } from './useLogin';
+import toast from 'react-hot-toast';
+import { isLoggedIn } from './useLogin';
 
 function ProtectedRoute({ children }) {
-  const user = currentUser();
+  const haveUser = isLoggedIn();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!user) navigate('/login');
-  }, [user]);
+    if (!haveUser) {
+      toast.error('User logged out! Please login again.');
+      navigate('/login');
+    }
+  }, [haveUser, navigate]);
 
-  return children;
+  if (haveUser) return children;
 }
 
 export default ProtectedRoute;
