@@ -6,8 +6,6 @@ import LoginForm from '../features/authentication/LoginForm';
 import Logo from '../ui/Logo';
 import Heading from '../ui/Heading';
 import { isLoggedIn } from '../features/authentication/useLogin';
-// import { useQuery } from '@tanstack/react-query';
-// import useUser from '../features/authentication/useUser';
 
 const LoginLayout = styled.main`
   min-height: 100vh;

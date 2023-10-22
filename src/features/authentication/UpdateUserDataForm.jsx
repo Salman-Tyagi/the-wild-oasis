@@ -11,11 +11,11 @@ import useUser from './useUser';
 import useUpdateUserData from './useUpdateUserData';
 
 function UpdateUserDataForm() {
-  const [fullName, setFullName] = useState('');
-  const [avatar, setAvatar] = useState(null);
-
   const { user: { fullName: name, email } = {} } = useUser();
   const { isLoading, updateUser } = useUpdateUserData();
+
+  const [fullName, setFullName] = useState('');
+  const [avatar, setAvatar] = useState(null);
 
   function handleSubmit(e) {
     e.preventDefault();

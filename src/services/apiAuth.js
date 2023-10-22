@@ -3,7 +3,11 @@ import axiosIntance from './axiosIntance';
 
 export const signup = async newUser => {
   try {
-    await axios.post('http://localhost:9000/api/v1/users/auth/signup', newUser);
+    const res = await axios.post(
+      'http://localhost:9000/api/v1/users/auth/signup',
+      newUser
+    );
+    return res?.data;
   } catch (err) {
     // console.error(err?.response?.data?.message);
     throw Error(err.response?.data?.message);
@@ -56,9 +60,23 @@ export const updateUserData = async newUser => {
       else formData.append(key, newUser[key]);
     }
 
-    await axiosIntance.patch('/api/v1/users/update-user', formData);
+    const res = await axiosIntance.patch('/api/v1/users/update-user', formData);
+    return res?.data;
   } catch (err) {
     // console.error(err?.response);
+    throw Error(err?.response?.data?.message);
+  }
+};
+
+export const updateUserPassword = async newPassword => {
+  try {
+    const res = await axiosIntance.patch(
+      '/api/v1/users/update-password',
+      newPassword
+    );
+    return res?.data;
+  } catch (err) {
+    console.log(err);
     throw Error(err?.response?.data?.message);
   }
 };

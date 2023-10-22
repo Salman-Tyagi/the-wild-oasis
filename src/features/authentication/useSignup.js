@@ -10,8 +10,11 @@ function useSignup() {
   const { isLoading, mutate: signup } = useMutation({
     mutationFn: newUser => signupApi(newUser),
     onSuccess: () => {
-      toast.success('Account created');
-      navigate('/login');
+      toast.loading('Creating account...');
+      setTimeout(() => {
+        toast.success('Account created successfully!');
+        navigate('/login');
+      }, 1000);
     },
     onError: err => toast.error(err.message),
   });
